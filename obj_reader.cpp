@@ -9,6 +9,8 @@ obj_reader::obj_reader(const std::string &filename, bool trace_scanning, bool tr
     , _trace_parsing(trace_parsing)
     , _scanner(filename)
     , _parser(*this)
+    , _obj(nullptr)
+    , _mtl(nullptr)
 {
 
 }

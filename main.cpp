@@ -32,6 +32,18 @@ int main(int argc, char *argv[])
     r.read();
     auto t = high_resolution_clock::now() - t0;
     auto dur = duration_cast<milliseconds>(t).count();
+
+    std::cout << "objects: " << r.objects().size() << std::endl;
+    std::cout << "faces: " << r.faces().size() << std::endl;
+    std::cout << "vertices: " << r.vertices().size() << std::endl;
+    std::cout << "textures: " << r.textures().size() << std::endl;
+    std::cout << "normals: " << r.normals().size() << std::endl;
+
+    for(auto o : r.objects())
+    {
+        std::cout << "object: " << o->name << ", faces: " << o->faces.size() << std::endl;
+    }
+
     std::cout << "time used: " << dur / 1000.0 << "s" << std::endl;
     return 0;
 }
