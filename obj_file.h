@@ -47,34 +47,38 @@ namespace obj
 	typedef vec2_t<float> vec2;
 	typedef vec3_t<float> vec3;
 	typedef vec4_t<float> vec4;
-
-	struct vertex
-	{
-		int size;
-		union
-		{
-			vec3 pos3;
-			vec4 pos4;
-		};
-	};
-
-	struct texture
-	{
-		int size;
-		union
-		{
-			float u;
-			vec2 tex2;
-			vec3 tex3;
-		};
-	};
-
+    
+    typedef vec4 vertex;
+    typedef vec3 texture;
 	typedef vec3 normal;
+    typedef std::vector<indexed_vertex> face;
+    
+    struct material
+    {
+        std::string name;
+        float ambient;
+        float sharpness;
+        float diffusion;
+        std::string map_Kd;
+        std::string map_Ks;
+    };
 
-	class face
-		: public std::vector<indexed_vertex>
-	{
-	};
+    typedef std::vector<face> face_set;
+    typedef std::map<std::string, material> material_set;
+    
+    class object
+    {
+    public:
+        object(const std::string &name, material *mtl = nullptr);
+        ~object();
 
+        const std::string &name() const;
+        material *mtl() const;
+        const std::string &faces() const;
 
+    private:
+        std::string _name;
+        material *_mtl;
+        face_set _faces;
+    };
 }

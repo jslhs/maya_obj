@@ -9,25 +9,8 @@
 
 namespace utility
 {
-    namespace obj
-    {
-        class face;
-        class vertex;
-        class normal;
-        class texture;
-        class group;
-        class material;
-    }
-
     class mtl_scanner;
     class mtl_parser;
-
-    typedef std::vector<obj::face> face_set;
-    typedef std::vector<obj::vertex> vertex_set;
-    typedef std::vector<obj::normal> normal_set;
-    typedef std::vector<obj::texture> texture_set;
-    typedef std::vector<obj::group> texture_set;
-    typedef std::map<std::string, obj::material> material_set;
 
     class obj_reader
     {
