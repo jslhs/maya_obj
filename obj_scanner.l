@@ -69,9 +69,9 @@ stech           return(obj_parser::token::SURFACE_APPROX_TECH);
 {comment}       { yyloc->lines(); /*std::cout << yytext;*/ return(obj_parser::token::COMMENT); }
 {integer}       { yylval->ival = atoi(yytext); return(obj_parser::token::INTEGER); }
 {float}         { yylval->fval = atof(yytext); return(obj_parser::token::FLOAT); }
-{string}        { _strings.push_back(yytext); yylval->sval = _strings.back().c_str(); return(obj_parser::token::STRING); }
-{identifier}    { _strings.push_back(yytext); yylval->sval = _strings.back().c_str(); return(obj_parser::token::IDENTIFIER); }
-{filename}      { _strings.push_back(yytext); yylval->sval = _strings.back().c_str(); return(obj_parser::token::FILENAME); }
+{string}        { yylval->sval = new std::string(yytext); _strings.push_back(yylval->sval); return(obj_parser::token::STRING); }
+{identifier}    { yylval->sval = new std::string(yytext); _strings.push_back(yylval->sval); return(obj_parser::token::IDENTIFIER); }
+{filename}      { yylval->sval = new std::string(yytext); _strings.push_back(yylval->sval); return(obj_parser::token::FILENAME); }
 
 "/"             return(obj_parser::token::SLASH);
  /* "\\"			return(BACK_SLASH); */

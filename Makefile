@@ -14,8 +14,8 @@ LEX=flex
 YACC=bison
 
 DEBUG_FLAGS=-ggdb -O0
-RELEASE_FLAGS=-static -O3 -mtune=core2 
-CXX_FLAGS=$(CXXFLAGS) -std=gnu++11 $(DEBUG_FLAGS)
+RELEASE_FLAGS=-static -O3 -g0 
+CXX_FLAGS=$(CXXFLAGS) -std=gnu++11 -mtune=core2
 LIBS=
 INCS=-I./
 

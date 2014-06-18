@@ -34,3 +34,24 @@ Icon
 # Files that might appear on external disk
 .Spotlight-V100
 .Trashes
+
+obj_parser.h
+location.hh
+maya_obj.exe
+.main.cpp.swp
+.obj_reader.h.swp
+.obj_reader.cpp.swp
+LAM.obj
+.obj_scanner.l.swp
+.obj_scanner.h.swp
+.Makefile.swp
+.obj_file.h.swp
+.obj_parser.y.swp
+*.swp
+
+stack.hh
+position.hh
+obj_parser.h
+obj_parser.h
+obj_scanner.cpp
+obj_parser.cpp

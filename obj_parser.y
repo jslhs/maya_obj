@@ -3,29 +3,27 @@
 %defines "obj_parser.h"
 %define namespace "utility"
 %define parser_class_name "obj_parser"
-%parse-param { utility::obj_scanner &scanner }
-%lex-param { utility::obj_scanner &scanner }
+%param { utility::obj_reader &reader }
 %locations
 
 %code requires
 {
 	namespace utility
 	{
-		class obj_scanner;
+		class obj_reader;
 	}
 }
 
 %code
 {
-	static int yylex(utility::obj_parser::semantic_type *yylval, utility::obj_parser::location_type *yyloc, utility::obj_scanner &scanner);
+	static int yylex(utility::obj_parser::semantic_type *yylval, utility::obj_parser::location_type *yyloc, utility::obj_reader &reader);
 }
 
 %union
 {
     int ival;
     float fval;
-    //std::string *sval;
-	const char *sval;
+    std::string *sval;
 }
 
 %token <ival> INTEGER
@@ -143,15 +141,15 @@ real:
 
 %%
 
-#include "obj_scanner.h"
+#include "obj_reader.h"
 
 void utility::obj_parser::error(const utility::obj_parser::location_type &loc, const std::string &msg)
 {
-	std::cerr << scanner.filename() << ":" << loc.end << ": " << msg << std::endl;
+	reader.error(loc, msg);
 }
 
-static int yylex(utility::obj_parser::semantic_type *yylval, utility::obj_parser::location_type *yyloc, utility::obj_scanner &scanner)
+static int yylex(utility::obj_parser::semantic_type *yylval, utility::obj_parser::location_type *yyloc, utility::obj_reader &reader)
 {
-	return scanner.yylex(yylval, yyloc);
+	return reader.yylex(yylval, yyloc);
 }
 

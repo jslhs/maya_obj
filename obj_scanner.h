@@ -47,6 +47,6 @@ namespace utility
 		std::ifstream _fs;
 		obj_parser::semantic_type *yylval;
 		obj_parser::location_type *yyloc;
-		std::vector<std::string> _strings;
+		std::vector<std::string *> _strings;
 	};
 }
