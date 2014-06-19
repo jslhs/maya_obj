@@ -3,7 +3,8 @@
 %defines "obj_parser.h"
 %define namespace "utility"
 %define parser_class_name "obj_parser"
-%param { utility::obj_reader &reader }
+%parse-param { utility::obj_reader &reader }
+%lex-param { utility::obj_reader &reader }
 %locations
 
 %code requires
@@ -31,7 +32,7 @@
     obj::normal *vn;
     obj::face *f;
     obj::object *obj;
-    obj::indexed_vertex *iv;
+    obj::ivertex *iv;
     obj::material *mtl;
 }
 
@@ -77,6 +78,37 @@
 %token CURVE_APPROX_TECH
 %token SURFACE_APPROX_TECH
 %token COMMENT
+%token NEWMTL
+%token AMBIENT_COLOR
+%token DIFFUSE_COLOR
+%token SPECULAR_COLOR
+%token ILLUM
+%token NS
+%token BUMP_MAP
+%token BUMP
+%token DISSOLVE
+%token AMBIENT_MAP
+%token DIFFUSE_MAP
+%token SPECULAR_MAP
+%token SPECULAR_N_MAP
+%token MAP_OPACITY
+%token ALPHA_MAP
+%token DISP_MAP
+%token DECAL_MAP
+%token REFL_MAP
+%token BLEND_U
+%token BLEND_V
+%token BOOST
+%token MODIFY_MAP
+%token ORIGIN
+%token SCALE
+%token TURBULENCE
+%token TEX_RES
+%token CLAMP
+%token BUMP_MUL
+%token IMF_CHANNEL
+%token TYPE
+
 %left SLASH
 %left BACK_SLASH
 
@@ -103,7 +135,7 @@ lines:
 
 line:
 	COMMENT
-    | MATERIAL_LIBRARY FILENAME
+    | MATERIAL_LIBRARY FILENAME { reader.parse_mtl(*$2); }
 	| material_line { reader.add($1); }
 	| vertex_line { reader.add($1); }
 	| normal_line { reader.add($1); }
@@ -115,26 +147,26 @@ line:
 	;
 
 material_line:
-	MATERIAL_NAME IDENTIFIER { $$ = new obj::material(); $$->name = *($2); }
+	MATERIAL_NAME IDENTIFIER { $$ = new obj::material(*$2); }
 	;
 
 vertex_line:
-	VERTEX real real real real { $$ = new obj::vertex(); }
-	| VERTEX real real real { $$ = new obj::vertex(); }
+	VERTEX real real real real { $$ = new obj::vertex($2, $3, $4, $5); }
+	| VERTEX real real real { $$ = new obj::vertex($2, $3, $4); }
 	;
 
 normal_line:
-	NORMAL real real real { $$ = new obj::normal(); }
+	NORMAL real real real { $$ = new obj::normal($2, $3, $4); }
 	;
 
 texture_line:
-	TEXTURE real real real { $$ = new obj::texture(); }
-	| TEXTURE real real { $$ = new obj::texture(); }
-	| TEXTURE real { $$ = new obj::texture(); }
+	TEXTURE real real real { $$ = new obj::texture($2, $3, $4); }
+	| TEXTURE real real { $$ = new obj::texture($2, $3); }
+	| TEXTURE real { $$ = new obj::texture($2); }
 	;
 
 group_line:
-	GROUP_NAME IDENTIFIER { $$ = new obj::object(); $$->name = *($2); }
+	GROUP_NAME IDENTIFIER { $$ = new obj::object(*$2); }
     ;
 
 smooth_group_line:
@@ -143,16 +175,16 @@ smooth_group_line:
 	;
 
 vertex_group:
-	INTEGER SLASH INTEGER SLASH INTEGER { $$ = new obj::indexed_vertex(); }
-	| INTEGER SLASH SLASH INTEGER { $$ = new obj::indexed_vertex(); }
+	INTEGER SLASH INTEGER SLASH INTEGER { $$ = new obj::ivertex($1, $3, $5); }
+	| INTEGER SLASH SLASH INTEGER { $$ = new obj::ivertex($1, $4); }
 	;
 
 face_line:
-	FACE vertex_group vertex_group vertex_group vertex_group { $$ = new obj::face(); }
-	| FACE vertex_group vertex_group vertex_group { $$ = new obj::face(); }
+	FACE vertex_group vertex_group vertex_group vertex_group { $$ = new obj::face($2, $3, $4, $5); }
+	| FACE vertex_group vertex_group vertex_group { $$ = new obj::face($2, $3, $4); }
 	;
 object_line:
-	OBJECT_NAME IDENTIFIER { $$ = new obj::object(); $$->name = *($2); }
+	OBJECT_NAME IDENTIFIER { $$ = new obj::object(*$2); }
 	;
 
 real:

@@ -1,0 +1,217 @@
+# 
+# Wavefront material file
+# Converted by the DEEP Exploration  3.5.0.448
+# Right Hemisphere, LTD
+# http://www.righthemisphere.com/
+# 
+
+newmtl range_chrome_sign
+Ka 0 0 0
+Kd 0.470824 0.470824 0.470824
+Ks 0.8 0.8 0.8
+illum 2
+Ns 264.836
+
+newmtl range_shields
+Ka 0 0 0
+Kd 0.127647 0.127647 0.127647
+Ks 0 0 0
+illum 2
+Ns 516.594
+
+newmtl range_black
+Ka 0 0 0
+Kd 0 0 0
+Ks 0 0 0
+illum 2
+Ns 2.14355
+
+newmtl range_carbon
+Ka 0 0 0
+Kd 0.454902 0.454902 0.454902
+Ks 0 0 0
+illum 2
+Ns 467.073
+map_bump grillbumps.jpg
+bump grillbumps.jpg
+
+newmtl range_fl_bulb
+Ka 0 0 0
+Kd 1 0.898039 0.690196
+Ks 0 0 0
+illum 2
+Ns 61.0714
+
+newmtl range_fl_lens
+Ka 0 0 0
+Kd 0.784314 0.784314 0.784314
+Ks 0 0 0
+illum 2
+Ns 61.0714
+d 0.04
+
+newmtl range_fl_frame
+Ka 0 0 0
+Kd 0.186275 0.186275 0.186275
+Ks 0 0 0
+illum 2
+Ns 90.836
+
+newmtl range_fl_mirror
+Ka 0 0 0
+Kd 0.344549 0.344549 0.344549
+Ks 0.445 0.445 0.445
+illum 2
+Ns 90.836
+
+newmtl range_fl_orange
+Ka 0 0 0
+Kd 0.784314 0.439216 0.0431373
+Ks 0 0 0
+illum 2
+Ns 61.0714
+
+newmtl range_logo
+Ka 0 0 0
+Kd 0 0 0
+Ks 0 0 0
+illum 2
+Ns 61.0714
+map_Kd rover-logo.jpg
+
+newmtl range_fl_glass
+Ka 0 0 0
+Kd 0.27451 0.27451 0.27451
+Ks 0.2 0.2 0.2
+illum 2
+Ns 128
+d 0.1
+
+newmtl range_body
+Ka 0 0 0
+Kd 0.255882 0.0511765 0.0123529
+Ks 0.15 0.15 0.15
+illum 2
+Ns 32
+
+newmtl range_grid_side
+Ka 0 0 0
+Kd 0.403922 0.403922 0.403922
+Ks 0 0 0
+illum 2
+Ns 222.165
+map_opacity bumpbee.jpg
+map_d bumpbee.jpg
+
+newmtl range_plate
+Ka 0 0 0
+Kd 0 0 0
+Ks 0 0 0
+illum 2
+Ns 348.978
+map_Kd tablica.jpg
+
+newmtl range_dark_glass
+Ka 0 0 0
+Kd 0.108235 0.108235 0.108235
+Ks 0 0 0
+illum 2
+Ns 128
+
+newmtl range_glass
+Ka 0 0 0
+Kd 0.134765 0.134765 0.134765
+Ks 0.2 0.2 0.2
+illum 2
+Ns 128
+d 0.66
+
+newmtl range_3stop
+Ka 0 0 0
+Kd 0.326118 0.0388235 0.0388235
+Ks 0 0 0
+illum 2
+Ns 61.0714
+
+newmtl range_red
+Ka 0 0 0
+Kd 0 0 0
+Ks 0 0 0
+illum 2
+Ns 61.0714
+map_Kd rover-red.jpg
+
+newmtl range_chrome
+Ka 0 0 0
+Kd 0.0784314 0.0784314 0.0784314
+Ks 0.8 0.8 0.8
+illum 2
+Ns 264.836
+
+newmtl range_ttr
+Ka 0 0 0
+Kd 0.204157 0.204157 0.204157
+Ks 0 0 0
+illum 2
+Ns 332.941
+map_bump chrbump.jpg
+bump chrbump.jpg
+
+newmtl range_inside_bright
+Ka 0 0 0
+Kd 0.784314 0.709804 0.588235
+Ks 0 0 0
+illum 2
+Ns 8
+
+newmtl range_mirror
+Ka 0 0 0
+Kd 0 0 0
+Ks 0.7515 0.7515 0.7515
+illum 2
+Ns 512
+
+newmtl range_oeange_side
+Ka 0 0 0
+Kd 0 0 0
+Ks 0 0 0
+illum 2
+Ns 61.0714
+map_Kd orange.jpg
+
+newmtl range_inside_wood
+Ka 0 0 0
+Kd 0.290882 0.248039 0.198431
+Ks 0 0 0
+illum 2
+Ns 670.087
+
+newmtl range_alu
+Ka 0 0 0
+Kd 0.470588 0.470588 0.470588
+Ks 0.1965 0.1965 0.1965
+illum 2
+Ns 64
+
+newmtl range_wheel_inside
+Ka 0 0 0
+Kd 0.372549 0.372549 0.372549
+Ks 0 0 0
+illum 2
+Ns 2.14355
+
+newmtl range_discs
+Ka 0 0 0
+Kd 0.435294 0.435294 0.435294
+Ks 0 0 0
+illum 2
+Ns 1104.08
+
+newmtl range_tire
+Ka 0 0 0
+Kd 0.137843 0.137843 0.137843
+Ks 0 0 0
+illum 2
+Ns 4
+map_bump tire.jpg
+bump tire.jpg

@@ -38,6 +38,7 @@ namespace utility
         const face_set &faces() const;        
 
     private:
+		void parse_mtl(const std::string &filename);
         void error(const obj_parser::location_type &loc, const std::string &msg);
         
         void add(obj::object *obj);
@@ -56,7 +57,11 @@ namespace utility
         bool _trace_scanning;
         bool _trace_parsing;
         bool _error;
-        std::string _filename;
+		std::string _obj_filename;
+		std::string _mtl_filename;
+
+		std::ifstream _obj_fs;
+		std::ifstream _mtl_fs;
 
         obj_parser _parser;
         obj_scanner _scanner;
@@ -70,6 +75,8 @@ namespace utility
 
         obj::object *_obj;
         obj::material *_mtl;
+
+		std::ifstream _fs;
     };
 
     inline void obj_reader::error(const obj_parser::location_type &loc, const std::string &msg)
