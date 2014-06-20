@@ -78,6 +78,8 @@
 %token CURVE_APPROX_TECH
 %token SURFACE_APPROX_TECH
 %token COMMENT
+
+
 %token NEWMTL
 %token AMBIENT_COLOR
 %token DIFFUSE_COLOR
@@ -120,7 +122,7 @@
 %type <obj> group_line;
 %type <obj> object_line;
 %type <fval> real;
-%type <mtl> material_line;
+%type <mtl> newmtl_line;
 
 %%
 
@@ -136,7 +138,7 @@ lines:
 line:
 	COMMENT
     | MATERIAL_LIBRARY FILENAME { reader.parse_mtl(*$2); }
-	| material_line { reader.add($1); }
+	| material_line
 	| vertex_line { reader.add($1); }
 	| normal_line { reader.add($1); }
 	| texture_line { reader.add($1); }
@@ -144,10 +146,21 @@ line:
 	| group_line { reader.add($1); }
     | smooth_group_line
 	| object_line { reader.add($1); }
+	| newmtl_line { reader.add($1); }	
 	;
 
+newmtl_line:
+	NEWMTL IDENTIFIER { $$ = new obj::material(*$2); }
+	;
+
+ambient_line:
+	AMBIENT_COLOR real real real
+	;
+
+
+
 material_line:
-	MATERIAL_NAME IDENTIFIER { $$ = new obj::material(*$2); }
+	MATERIAL_NAME IDENTIFIER { reader.set_mtl_name(*$2); }
 	;
 
 vertex_line:

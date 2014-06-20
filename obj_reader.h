@@ -47,6 +47,7 @@ namespace utility
         void add(obj::texture *t);
         void add(obj::normal *n);
         void add(obj::face *f);
+		void set_mtl_name(const std::string &name);
 
         obj::object *cur_obj() const;
         obj::material *cur_mtl() const;
@@ -75,6 +76,7 @@ namespace utility
 
         obj::object *_obj;
         obj::material *_mtl;
+		std::string _mtl_name;
 
 		std::ifstream _fs;
     };
@@ -95,9 +97,15 @@ namespace utility
         return _parser;
     }
 
+	inline void obj_reader::set_mtl_name(const std::string &name)
+	{
+		_mtl_name = name;
+	}
+
     inline void obj_reader::add(obj::object *obj)
     {
         _obj = obj;
+		//_obj->mtl = _mtl_name;
         _objs.push_back(obj);
     }
 
@@ -124,6 +132,7 @@ namespace utility
 
     inline void obj_reader::add(obj::face *f)
     {
+		f->mtl = _mtl_name;
         _faces.push_back(f);
         if(_obj) _obj->faces.push_back(f);
     }
@@ -162,4 +171,9 @@ namespace utility
     {
         return _faces;
     }
+
+	inline const material_set &obj_reader::materials() const
+	{
+		return _mtls;
+	}
 }

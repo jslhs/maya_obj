@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
     std::cout << "vertices: " << r.vertices().size() << std::endl;
     std::cout << "textures: " << r.textures().size() << std::endl;
     std::cout << "normals: " << r.normals().size() << std::endl;
+	std::cout << "materials: " << r.materials().size() << std::endl;
 
     for(auto o : r.objects())
     {

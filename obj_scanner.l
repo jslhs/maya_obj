@@ -62,6 +62,9 @@ trace_obj       return(obj_parser::token::RAY_TRACING);
 ctech           return(obj_parser::token::CURVE_APPROX_TECH);
 stech           return(obj_parser::token::SURFACE_APPROX_TECH);
 
+newmtl			return(obj_parser::token::NEWMTL);
+
+
 
 "\\\n"			{ yyloc->lines(); }	
 \n              { yyloc->lines(); }

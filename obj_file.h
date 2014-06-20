@@ -152,16 +152,38 @@ namespace obj
 			push_back(v3);
 			push_back(v4);
 		}
+
+		std::string mtl;
+	};
+
+	struct tex_map
+	{
+		std::string tex;
+		vec3 org;
+		vec3 scale;
+		vec3 tur;
+		bool blendu;
+		bool blendv;
+		float boost;
+		bool clamp;
 	};
     
     struct material
     {
         std::string name;
-        float ambient;
+        vec3 ambient;
+        vec3 diffusion;
+        vec3 specular;
+		
+		int illum;
         float sharpness;
-        float diffusion;
-        std::string map_Kd;
-        std::string map_Ks;
+		float dissolve;
+		
+		tex_map map_Kd;
+        tex_map map_Ks;
+		tex_map map_opacity;
+		tex_map map_d;
+		tex_map map_bump;
 
 		material() { }
 		material(const std::string &n) : name(n) { }
@@ -171,12 +193,10 @@ namespace obj
     {
         std::string name;
         std::vector<face *> faces;
-        material *mtl;
 
-		object() : mtl(nullptr) { }
-		object(const std::string &n, material *m = nullptr)
+		object() { }
+		object(const std::string &n)
 			: name(n)
-			, mtl(m)
 		{
 		}
     };
