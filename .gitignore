@@ -55,3 +55,4 @@ obj_parser.h
 obj_parser.h
 obj_scanner.cpp
 obj_parser.cpp
+RangeRover.obj
