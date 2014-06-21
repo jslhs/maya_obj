@@ -83,35 +83,37 @@
 
 
 %token NEWMTL
-%token AMBIENT_COLOR
-%token DIFFUSE_COLOR
-%token SPECULAR_COLOR
+%token KA
+%token KD
+%token KS
 %token ILLUM
 %token NS
-%token BUMP_MAP
+%token MAP_BUMP
 %token BUMP
-%token DISSOLVE
-%token AMBIENT_MAP
-%token DIFFUSE_MAP
-%token SPECULAR_MAP
-%token SPECULAR_N_MAP
-%token MAP_OPACITY
-%token ALPHA_MAP
-%token DISP_MAP
-%token DECAL_MAP
-%token REFL_MAP
-%token BLEND_U
-%token BLEND_V
+%token D
+%token <tex> MAP_KA
+%token <tex> MAP_KD
+%token <tex> MAP_KS
+%token <tex> MAP_NS
+%token <tex> MAP_OPACITY
+%token <tex> MAP_D
+%token <tex> DISP
+%token <tex> DECAL
+%token <tex> REFL
+%token BLENDU
+%token BLENDV
 %token BOOST
-%token MODIFY_MAP
-%token ORIGIN
+%token MM
+%token O
 %token SCALE
 %token TURBULENCE
 %token TEX_RES
 %token CLAMP
 %token BUMP_MUL
-%token IMF_CHANNEL
+%token IMFCHAN
 %token TYPE
+%token ON
+%token OFF
 
 %left SLASH
 %left BACK_SLASH
@@ -146,15 +148,15 @@
 %%
 
 obj_file:
-	lines
+	obj_file_lines
 	;
 
-lines:
-	lines line
-	| line
+obj_file_lines:
+	obj_file_lines obj_file_line
+	| obj_file_line
 	;
 
-line:
+obj_file_line:
 	COMMENT
     | MATERIAL_LIBRARY FILENAME { reader.parse_mtl(*$2); }
 	| material_line
@@ -165,11 +167,28 @@ line:
 	| group_line { reader.add($1); }
     | smooth_group_line
 	| object_line { reader.add($1); }
-	| newmtl_line { reader.add($1); }	
-	;
+    
+    /* mtl file lines */
+    | newmtl_line { reader.add($1); }	
+	| ambient_line
+    | diffuse_line
+    | specular_line
+    | specular_n_line
+    | dissolve_line
+    | illum_line
+    | ambient_map_line
+    | diffuse_map_line
+    | specular_map_line
+    | specular_n_map_line
+    | bump_map_line
+    | dissolve_map_line
+    | disp_map_line
+    | decal_map_line
+    | refl_map_line
+    ;
 
 material_line:
-	MATERIAL_NAME IDENTIFIER { reader.set_mtl_name(*$2); }
+	MATERIAL_NAME IDENTIFIER { reader.set_mtl_name($2); }
 	;
 
 vertex_line:
@@ -188,7 +207,7 @@ texture_line:
 	;
 
 group_line:
-	GROUP_NAME IDENTIFIER { $$ = new obj::object(*$2); }
+	GROUP_NAME IDENTIFIER { $$ = new obj::object($2); }
     ;
 
 smooth_group_line:
@@ -206,7 +225,7 @@ face_line:
 	| FACE vertex_group vertex_group vertex_group { $$ = new obj::face($2, $3, $4); }
 	;
 object_line:
-	OBJECT_NAME IDENTIFIER { $$ = new obj::object(*$2); }
+	OBJECT_NAME IDENTIFIER { $$ = new obj::object($2); }
 	;
 
 real:
@@ -215,44 +234,64 @@ real:
 	;
 
 newmtl_line:
-	NEWMTL IDENTIFIER { $$ = new obj::material(*$2); }
+	NEWMTL IDENTIFIER { $$ = new obj::material($2); }
 	;
-
 ambient_line:
-	AMBIENT_COLOR real real real { $$ = new obj::vec3($2, $3, $4); }
+	KA real real real { $$ = new obj::vec3($2, $3, $4); }
 	;
 diffuse_line:
-	DIFFUSE_COLOR real real real { $$ = new obj::vec3($2, $3, $4); }
+	KD real real real { $$ = new obj::vec3($2, $3, $4); }
 	;
 specular_line:
-	SPECULAR_COLOR real real real { $$ = new obj::vec3($2, $3, $4); }
+	KS real real real { $$ = new obj::vec3($2, $3, $4); }
 	;
 dissolve_line:
-	DISSOLVE real { $$ = $2; }
+	D real { $$ = $2; }
 	;
 specular_n_line:
 	NS real { $$ = $2; }
 	;
+illum_line:
+    ILLUM INTEGER { $$ = $2; }
+    ;
 ambient_map_line:
-	AMBIENT_MAP FILENAME { $$ = new obj::tex_map(); }
+    MAP_KA
+	| MAP_KA FILENAME { $$ = new obj::tex_map($2); }
 	;
 diffuse_map_line:
-	DIFFUSE_MAP FILENAME { $$ = new obj::tex_map(); }
+    MAP_KD
+	| MAP_KD FILENAME { $$ = new obj::tex_map($2); }
 	;
 specular_map_line:
-	SPECULAR_MAP FILENAME { $$ = new obj::tex_map(); }
+	MAP_KS
+    | MAP_KS FILENAME { $$ = new obj::tex_map($2); }
 	;
 specular_n_map_line:
-	SPECULAR_N_MAP FILENAME { $$ = new obj::tex_map(); }
+	MAP_NS FILENAME { $$ = new obj::tex_map($2); }
 	;
 bump_map_line:
-	BUMP_MAP FILENAME { $$ = new obj::tex_map(); }
+    MAP_BUMP
+	| BUMP
+    | MAP_BUMP FILENAME { $$ = new obj::tex_map($2); }
+    | BUMP FILENAME { $$ = new obj::tex_map($2); }
 	;
 dissolve_map_line:
-	DISSOLVE_MAP FILENAME { $$ = new obj::tex_map(); }
-	;
+	MAP_D
+    | MAP_OPACITY
+    | MAP_D FILENAME { $$ = new obj::tex_map($2); }
+	| MAP_OPACITY FILENAME { $$ = new obj::tex_map($2); }
+    ;
+decal_map_line:
+    DECAL
+    | DECAL FILENAME { $$ = new obj::tex_map($2); }
+    ;
+disp_map_line:
+    DISP
+    | DISP FILENAME { $$ = new obj::tex_map($2); }
+    ;
 refl_map_line:
-	REFL_MAP FILENAME { $$ = new obj::tex_map(); } 
+	REFL
+    | REFL FILENAME { $$ = new obj::tex_map($2); } 
 %%
 
 

@@ -16,7 +16,7 @@ namespace utility
     typedef std::vector<obj::texture *> texture_set;
     typedef std::vector<obj::normal *> normal_set;
     typedef std::vector<obj::face *> face_set;
-    typedef std::map<std::string, obj::material *> material_set;
+    typedef std::map<std::string *, obj::material *> material_set;
     typedef std::vector<obj::object *> object_set; 
 
     class obj_reader
@@ -47,7 +47,7 @@ namespace utility
         void add(obj::texture *t);
         void add(obj::normal *n);
         void add(obj::face *f);
-		void set_mtl_name(const std::string &name);
+		void set_mtl_name(std::string *name);
 
 		void recycle(obj::vec3 *val);
 		void recycle(obj::tex_map *val);
@@ -79,7 +79,7 @@ namespace utility
 
         obj::object *_obj;
         obj::material *_mtl;
-		std::string _mtl_name;
+		std::string *_mtl_name;
 
 		std::ifstream _fs;
 
@@ -113,7 +113,7 @@ namespace utility
 		_tvals.push_back(val);
 	}
 
-	inline void obj_reader::set_mtl_name(const std::string &name)
+	inline void obj_reader::set_mtl_name(std::string *name)
 	{
 		_mtl_name = name;
 	}

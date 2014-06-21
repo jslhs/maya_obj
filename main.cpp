@@ -42,7 +42,12 @@ int main(int argc, char *argv[])
 
     for(auto o : r.objects())
     {
-        std::cout << "object: " << o->name << ", faces: " << o->faces.size() << std::endl;
+        std::cout << "object: " << (o->name ? (*o->name) : "") << ", faces: " << o->faces.size() << std::endl;
+    }
+
+    for(auto m : r.materials())
+    {
+        std::cout << "material: " << (m.first ? (*m.first) : "") << std::endl;
     }
 
     std::cout << "time used: " << dur / 1000.0 << "s" << std::endl;

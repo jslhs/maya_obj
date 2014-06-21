@@ -63,7 +63,24 @@ ctech           return(obj_parser::token::CURVE_APPROX_TECH);
 stech           return(obj_parser::token::SURFACE_APPROX_TECH);
 
 newmtl			return(obj_parser::token::NEWMTL);
-
+Ka              return(obj_parser::token::KA);
+Kd              return(obj_parser::token::KD);
+Ks              return(obj_parser::token::KS);
+Ns              return(obj_parser::token::NS);
+illum           return(obj_parser::token::ILLUM);
+d               return(obj_parser::token::D);
+map_[kK][aA]    return(obj_parser::token::MAP_KA);
+map_[kK][dD]    return(obj_parser::token::MAP_KD);
+map_[kK][sS]    return(obj_parser::token::MAP_KS);
+map_Ns          return(obj_parser::token::MAP_NS);
+map_d           return(obj_parser::token::MAP_D);
+map_bump        return(obj_parser::token::MAP_BUMP);
+bump            return(obj_parser::token::BUMP);
+map_opacity    return(obj_parser::token::MAP_OPACITY);
+-type           return(obj_parser::token::TYPE);
+on              return(obj_parser::token::ON);
+off             return(obj_parser::token::OFF);
+refl            return(obj_parser::token::REFL);
 
 
 "\\\n"			{ yyloc->lines(); }	

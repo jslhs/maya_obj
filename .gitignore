@@ -56,3 +56,6 @@ obj_parser.h
 obj_scanner.cpp
 obj_parser.cpp
 RangeRover.obj
+f430.obj
+f430.mtl
+LAM.mtl
