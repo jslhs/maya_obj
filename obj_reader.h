@@ -49,6 +49,9 @@ namespace utility
         void add(obj::face *f);
 		void set_mtl_name(const std::string &name);
 
+		void recycle(obj::vec3 *val);
+		void recycle(obj::tex_map *val);
+
         obj::object *cur_obj() const;
         obj::material *cur_mtl() const;
 
@@ -79,6 +82,9 @@ namespace utility
 		std::string _mtl_name;
 
 		std::ifstream _fs;
+
+		std::vector<obj::vec3 *> _vvals;
+		std::vector<obj::tex_map *> _tvals;
     };
 
     inline void obj_reader::error(const obj_parser::location_type &loc, const std::string &msg)
@@ -96,6 +102,16 @@ namespace utility
     {
         return _parser;
     }
+
+	inline void obj_reader::recycle(obj::vec3 *val)
+	{
+		_vvals.push_back(val);
+	}
+
+	inline void obj_reader::recycle(obj::tex_map *val)
+	{
+		_tvals.push_back(val);
+	}
 
 	inline void obj_reader::set_mtl_name(const std::string &name)
 	{

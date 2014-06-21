@@ -34,6 +34,8 @@
     obj::object *obj;
     obj::ivertex *iv;
     obj::material *mtl;
+	obj::vec3 *color;
+	obj::tex_map *tex;
 }
 
 %token <ival> INTEGER
@@ -122,7 +124,24 @@
 %type <obj> group_line;
 %type <obj> object_line;
 %type <fval> real;
+
 %type <mtl> newmtl_line;
+%type <color> ambient_line;
+%type <color> diffuse_line;
+%type <color> specular_line;
+%type <fval> specular_n_line;
+%type <fval> dissolve_line;
+%type <ival> illum_line;
+%type <tex> ambient_map_line;
+%type <tex> diffuse_map_line;
+%type <tex> specular_map_line;
+%type <tex> specular_n_map_line;
+%type <tex> bump_map_line;
+%type <tex> dissolve_map_line;
+%type <tex> disp_map_line;
+%type <tex> decal_map_line;
+%type <tex> refl_map_line;
+
 
 %%
 
@@ -148,16 +167,6 @@ line:
 	| object_line { reader.add($1); }
 	| newmtl_line { reader.add($1); }	
 	;
-
-newmtl_line:
-	NEWMTL IDENTIFIER { $$ = new obj::material(*$2); }
-	;
-
-ambient_line:
-	AMBIENT_COLOR real real real
-	;
-
-
 
 material_line:
 	MATERIAL_NAME IDENTIFIER { reader.set_mtl_name(*$2); }
@@ -205,6 +214,45 @@ real:
 	| FLOAT { $$ = $1; }
 	;
 
+newmtl_line:
+	NEWMTL IDENTIFIER { $$ = new obj::material(*$2); }
+	;
+
+ambient_line:
+	AMBIENT_COLOR real real real { $$ = new obj::vec3($2, $3, $4); }
+	;
+diffuse_line:
+	DIFFUSE_COLOR real real real { $$ = new obj::vec3($2, $3, $4); }
+	;
+specular_line:
+	SPECULAR_COLOR real real real { $$ = new obj::vec3($2, $3, $4); }
+	;
+dissolve_line:
+	DISSOLVE real { $$ = $2; }
+	;
+specular_n_line:
+	NS real { $$ = $2; }
+	;
+ambient_map_line:
+	AMBIENT_MAP FILENAME { $$ = new obj::tex_map(); }
+	;
+diffuse_map_line:
+	DIFFUSE_MAP FILENAME { $$ = new obj::tex_map(); }
+	;
+specular_map_line:
+	SPECULAR_MAP FILENAME { $$ = new obj::tex_map(); }
+	;
+specular_n_map_line:
+	SPECULAR_N_MAP FILENAME { $$ = new obj::tex_map(); }
+	;
+bump_map_line:
+	BUMP_MAP FILENAME { $$ = new obj::tex_map(); }
+	;
+dissolve_map_line:
+	DISSOLVE_MAP FILENAME { $$ = new obj::tex_map(); }
+	;
+refl_map_line:
+	REFL_MAP FILENAME { $$ = new obj::tex_map(); } 
 %%
 
 

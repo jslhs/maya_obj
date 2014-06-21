@@ -171,22 +171,42 @@ namespace obj
     struct material
     {
         std::string name;
-        vec3 ambient;
-        vec3 diffusion;
-        vec3 specular;
+        vec3 *ambient;
+        vec3 *diffusion;
+        vec3 *specular;
 		
 		int illum;
         float sharpness;
 		float dissolve;
 		
-		tex_map map_Kd;
-        tex_map map_Ks;
-		tex_map map_opacity;
-		tex_map map_d;
-		tex_map map_bump;
+		tex_map *map_Ka;			// ambient texture map
+		tex_map *map_Kd;			// diffuse texture map
+        tex_map *map_Ks;			// specular color texture map
+		tex_map *map_Ns;			// specular highlight component
+		tex_map *map_opacity;		// 
+		tex_map *map_d;				// alpha texture map
+		tex_map *map_bump;			// bump map
+		tex_map *map_refl;			// reflection map
 
-		material() { }
-		material(const std::string &n) : name(n) { }
+		material(const std::string &n = std::string()) 
+			: name(name)
+			, ambient(nullptr)
+			, diffusion(nullptr)
+			, specular(nullptr)
+			, illum(0)
+			, sharpness(0)
+			, dissolve(1.0)
+			, map_Ka(nullptr)
+			, map_Kd(nullptr)
+			, map_Ks(nullptr)
+			, map_Ns(nullptr)
+			, map_opacity(nullptr)
+			, map_d(nullptr)
+			, map_bump(nullptr)
+			, map_refl(nullptr)
+		{ 
+		}
+
     };
 
     struct object
