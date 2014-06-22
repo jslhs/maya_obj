@@ -16,8 +16,10 @@ namespace utility
     typedef std::vector<obj::texture *> texture_set;
     typedef std::vector<obj::normal *> normal_set;
     typedef std::vector<obj::face *> face_set;
-    typedef std::map<std::string *, obj::material *> material_set;
-    typedef std::vector<obj::object *> object_set; 
+    typedef std::map<std::string, obj::material *> material_set;
+    typedef std::vector<obj::object *> object_set;
+	typedef std::map<std::string, face_set> mtl_face_map;
+	typedef std::map<std::string, face_set> obj_face_map;	
 
     class obj_reader
     {
@@ -27,33 +29,51 @@ namespace utility
 
     public:
         bool read();
-        obj_scanner &scanner();
-        obj_parser &parser();
+        inline obj_scanner &scanner();
+        inline obj_parser &parser();
 
-        const vertex_set &vertices() const;
-        const texture_set &textures() const;
-        const normal_set &normals() const;
-        const object_set &objects() const;
-        const material_set &materials() const;
-        const face_set &faces() const;        
+        inline const vertex_set &vertices() const;
+        inline const texture_set &textures() const;
+        inline const normal_set &normals() const;
+        inline const object_set &objects() const;
+        inline const material_set &materials() const;
+        inline const face_set &faces() const;
+		inline const mtl_face_map &mtl_faces() const;
+		inline const obj_face_map &obj_faces() const;	
 
     private:
 		void parse_mtl(const std::string &filename);
-        void error(const obj_parser::location_type &loc, const std::string &msg);
+        inline void error(const obj_parser::location_type &loc, const std::string &msg);
         
-        void add(obj::object *obj);
-        void add(obj::material *mtl);
-        void add(obj::vertex *v);
-        void add(obj::texture *t);
-        void add(obj::normal *n);
-        void add(obj::face *f);
-		void set_mtl_name(std::string *name);
+        inline void add(obj::object *obj);
+        inline void add(obj::material *mtl);
+        inline void add(obj::vertex *v);
+        inline void add(obj::texture *t);
+        inline void add(obj::normal *n);
+        inline void add(obj::face *f);
+		inline void set_mtl_name(std::string *name);
+		
+		inline void set_mtl_illum(int i)	  { if(_mtl) _mtl->illum = i; }
+		inline void set_mtl_Tf(obj::vec3 *tf) { if(_mtl) _mtl->trans_filter = tf; }
+		inline void set_mtl_Ka(obj::vec3 *ka) { if(_mtl) _mtl->ambient = ka; }
+		inline void set_mtl_Kd(obj::vec3 *kd) { if(_mtl) _mtl->diffuse = kd; }
+		inline void set_mtl_Ks(obj::vec3 *ks) { if(_mtl) _mtl->specular = ks; }
+		inline void set_mtl_Ke(obj::vec3 *ke) { if(_mtl) _mtl->env = ke; }
+		inline void set_mtl_Ns(float ns) { if(_mtl) _mtl->specular_n = ns; }
+		inline void set_mtl_Ni(float ni) { if(_mtl) _mtl->optical_density = ni; }
+		inline void set_mtl_d(float d)	 { if(_mtl) _mtl->dissolve = d; }
+		inline void set_mtl_map_Ka(obj::tex_map *tex) { if(_mtl) _mtl->map_Ka = tex; }
+		inline void set_mtl_map_Ks(obj::tex_map *tex) { if(_mtl) _mtl->map_Ks = tex; }
+		inline void set_mtl_map_Kd(obj::tex_map *tex) { if(_mtl) _mtl->map_Kd = tex; }
+		inline void set_mtl_map_Ns(obj::tex_map *tex) { if(_mtl) _mtl->map_Ns = tex; }
+		inline void set_mtl_map_d(obj::tex_map *tex)  { if(_mtl) _mtl->map_d = tex; }
+		inline void set_mtl_refl(obj::tex_map *tex)   { if(_mtl) _mtl->map_refl = tex; }
+		inline void set_mtl_map_bump(obj::tex_map *tex)   { if(_mtl) _mtl->map_bump = tex; }
+		inline void set_mtl_decal(obj::tex_map *tex)  { if(_mtl) _mtl->map_decal = tex; }
+		inline void set_mtl_disp(obj::tex_map *tex)   { if(_mtl) _mtl->map_disp = tex; }
 
-		void recycle(obj::vec3 *val);
-		void recycle(obj::tex_map *val);
-
-        obj::object *cur_obj() const;
-        obj::material *cur_mtl() const;
+        inline obj::object *cur_obj() const;
+        inline obj::material *cur_mtl() const;
 
         friend class obj_parser;
 
@@ -76,11 +96,15 @@ namespace utility
         texture_set _texs;
         normal_set _norms;
         face_set _faces;
+		mtl_face_map _mtl_face_map;
+		obj_face_map _obj_face_map;
 
         obj::object *_obj;
         obj::material *_mtl;
-		std::string *_mtl_name;
 
+		std::string _mtl_name;
+		std::string _obj_name;
+		
 		std::ifstream _fs;
 
 		std::vector<obj::vec3 *> _vvals;
@@ -103,24 +127,25 @@ namespace utility
         return _parser;
     }
 
-	inline void obj_reader::recycle(obj::vec3 *val)
+	inline const mtl_face_map &obj_reader::mtl_faces() const
 	{
-		_vvals.push_back(val);
+		return _mtl_face_map;
 	}
 
-	inline void obj_reader::recycle(obj::tex_map *val)
+	inline const obj_face_map &obj_reader::obj_faces() const
 	{
-		_tvals.push_back(val);
+		return _obj_face_map;
 	}
 
 	inline void obj_reader::set_mtl_name(std::string *name)
 	{
-		_mtl_name = name;
+		if(name) _mtl_name = *name;
 	}
 
     inline void obj_reader::add(obj::object *obj)
     {
         _obj = obj;
+		if(_obj && _obj->name) _obj_name = *_obj->name;
 		//_obj->mtl = _mtl_name;
         _objs.push_back(obj);
     }
@@ -128,7 +153,7 @@ namespace utility
     inline void obj_reader::add(obj::material *mtl)
     {
         _mtl = mtl;
-        _mtls[mtl->name] = mtl;
+        if(mtl && mtl->name) _mtls[*(mtl->name)] = mtl;
     }
 
     inline void obj_reader::add(obj::vertex *v)
@@ -148,9 +173,9 @@ namespace utility
 
     inline void obj_reader::add(obj::face *f)
     {
-		f->mtl = _mtl_name;
         _faces.push_back(f);
-        if(_obj) _obj->faces.push_back(f);
+		_mtl_face_map[_mtl_name].push_back(f);
+        _obj_face_map[_obj_name].push_back(f);
     }
 
     inline obj::object *obj_reader::cur_obj() const

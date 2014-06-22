@@ -152,8 +152,6 @@ namespace obj
 			push_back(v3);
 			push_back(v4);
 		}
-
-		std::string *mtl;
 	};
 
 	struct tex_map
@@ -184,12 +182,15 @@ namespace obj
     {
         std::string *name;
         vec3 *ambient;
-        vec3 *diffusion;
+        vec3 *diffuse;
         vec3 *specular;
+		vec3 *env;
+		vec3 *trans_filter;
 		
 		int illum;
-        float sharpness;
+        float specular_n;
 		float dissolve;
+		float optical_density;
 		
 		tex_map *map_Ka;			// ambient texture map
 		tex_map *map_Kd;			// diffuse texture map
@@ -199,15 +200,20 @@ namespace obj
 		tex_map *map_d;				// alpha texture map
 		tex_map *map_bump;			// bump map
 		tex_map *map_refl;			// reflection map
+		tex_map *map_decal;
+		tex_map *map_disp;
 
 		material(std::string *n = nullptr) 
 			: name(n)
 			, ambient(nullptr)
-			, diffusion(nullptr)
+			, diffuse(nullptr)
 			, specular(nullptr)
+			, env(nullptr)
+			, trans_filter(nullptr)
 			, illum(0)
-			, sharpness(0)
+			, specular_n(0)
 			, dissolve(1.0)
+			, optical_density(0)
 			, map_Ka(nullptr)
 			, map_Kd(nullptr)
 			, map_Ks(nullptr)
@@ -224,7 +230,6 @@ namespace obj
     struct object
     {
         std::string *name;
-        std::vector<face *> faces;
 
 		object() { }
 		object(std::string *n = nullptr)

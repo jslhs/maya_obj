@@ -23,7 +23,7 @@ string          \"([^"\n]|\"\")+\"
 bad_string      \"([^"\n]|\"\")+
 float           (-?{i}\.{i}?|{i}?\.{i}){exponent}?
 real			({i}|{float})
-
+path			[a-zA-Z\.\-_0-9\\~\:]+
 %%
 
 v               return(obj_parser::token::VERTEX);
@@ -66,6 +66,7 @@ newmtl			return(obj_parser::token::NEWMTL);
 Ka              return(obj_parser::token::KA);
 Kd              return(obj_parser::token::KD);
 Ks              return(obj_parser::token::KS);
+Ke				return(obj_parser::token::KE);
 Ns              return(obj_parser::token::NS);
 illum           return(obj_parser::token::ILLUM);
 d               return(obj_parser::token::D);
@@ -76,11 +77,14 @@ map_Ns          return(obj_parser::token::MAP_NS);
 map_d           return(obj_parser::token::MAP_D);
 map_bump        return(obj_parser::token::MAP_BUMP);
 bump            return(obj_parser::token::BUMP);
-map_opacity    return(obj_parser::token::MAP_OPACITY);
+map_opacity		return(obj_parser::token::MAP_OPACITY);
 -type           return(obj_parser::token::TYPE);
 on              return(obj_parser::token::ON);
 off             return(obj_parser::token::OFF);
 refl            return(obj_parser::token::REFL);
+Tf				return(obj_parser::token::TF);
+Tr				return(obj_parser::token::TR);
+Ni				return(obj_parser::token::NI);
 
 
 "\\\n"			{ yyloc->lines(); }	
@@ -92,6 +96,7 @@ refl            return(obj_parser::token::REFL);
 {string}        { yylval->sval = new std::string(yytext); _strings.push_back(yylval->sval); return(obj_parser::token::STRING); }
 {identifier}    { yylval->sval = new std::string(yytext); _strings.push_back(yylval->sval); return(obj_parser::token::IDENTIFIER); }
 {filename}      { yylval->sval = new std::string(yytext); _strings.push_back(yylval->sval); return(obj_parser::token::FILENAME); }
+{path}			{ yylval->sval = new std::string(yytext); _strings.push_back(yylval->sval); return(obj_parser::token::PATH); }
 
 "/"             return(obj_parser::token::SLASH);
  /* "\\"			return(BACK_SLASH); */

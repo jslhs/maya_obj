@@ -7,6 +7,8 @@
 %lex-param { utility::obj_reader &reader }
 %locations
 
+%debug
+
 %code requires
 {
     #include "obj_file.h"
@@ -43,6 +45,7 @@
 %token <sval> STRING
 %token <sval> FILENAME
 %token <sval> IDENTIFIER
+%token <sval> PATH
 
 %token <v> VERTEX
 %token <vt> TEXTURE
@@ -83,13 +86,14 @@
 
 
 %token NEWMTL
-%token KA
-%token KD
-%token KS
-%token ILLUM
-%token NS
-%token MAP_BUMP
-%token BUMP
+%token <color> KA
+%token <color> KD
+%token <color> KS
+%token <color> KE
+%token <ival> ILLUM
+%token <fval> NS
+%token <tex> MAP_BUMP
+%token <tex> BUMP
 %token D
 %token <tex> MAP_KA
 %token <tex> MAP_KD
@@ -114,6 +118,9 @@
 %token TYPE
 %token ON
 %token OFF
+%token <fval> TF
+%token <fval> TR
+%token <fval> NI
 
 %left SLASH
 %left BACK_SLASH
@@ -131,6 +138,7 @@
 %type <color> ambient_line;
 %type <color> diffuse_line;
 %type <color> specular_line;
+%type <color> env_color_line;
 %type <fval> specular_n_line;
 %type <fval> dissolve_line;
 %type <ival> illum_line;
@@ -143,7 +151,9 @@
 %type <tex> disp_map_line;
 %type <tex> decal_map_line;
 %type <tex> refl_map_line;
-
+%type <sval> path;
+%type <fval> optical_density_line;
+%type <color> trans_filter_line;
 
 %%
 
@@ -169,23 +179,26 @@ obj_file_line:
 	| object_line { reader.add($1); }
     
     /* mtl file lines */
-    | newmtl_line { reader.add($1); }	
-	| ambient_line
-    | diffuse_line
-    | specular_line
-    | specular_n_line
-    | dissolve_line
-    | illum_line
-    | ambient_map_line
-    | diffuse_map_line
-    | specular_map_line
-    | specular_n_map_line
-    | bump_map_line
-    | dissolve_map_line
-    | disp_map_line
-    | decal_map_line
-    | refl_map_line
-    ;
+    | newmtl_line				 { reader.add($1); }	
+	| ambient_line				 { reader.set_mtl_Ka($1); }
+    | diffuse_line				 { reader.set_mtl_Kd($1); }
+    | specular_line				 { reader.set_mtl_Ks($1); }
+    | specular_n_line			 { reader.set_mtl_Ns($1); }
+	| env_color_line			 { reader.set_mtl_Ke($1); }
+    | dissolve_line				 { reader.set_mtl_d($1); }
+    | illum_line				 { reader.set_mtl_illum($1); }
+    | ambient_map_line			 { reader.set_mtl_map_Ka($1); }
+    | diffuse_map_line			 { reader.set_mtl_map_Kd($1); }
+    | specular_map_line			 { reader.set_mtl_map_Ks($1); }
+    | specular_n_map_line		 { reader.set_mtl_map_Ns($1); }
+    | bump_map_line				 { reader.set_mtl_map_bump($1); }
+    | dissolve_map_line			 { reader.set_mtl_map_d($1); }
+    | disp_map_line				 { reader.set_mtl_disp($1); }
+    | decal_map_line			 { reader.set_mtl_decal($1); }
+    | refl_map_line				 { reader.set_mtl_refl($1); }
+    | trans_filter_line			 { reader.set_mtl_Tf($1); }
+	| optical_density_line		 { reader.set_mtl_Ni($1); }
+	;
 
 material_line:
 	MATERIAL_NAME IDENTIFIER { reader.set_mtl_name($2); }
@@ -211,7 +224,7 @@ group_line:
     ;
 
 smooth_group_line:
-	SMOOTHING_GROUP IDENTIFIER { /*std::cout << "smoothing group: " << $2 << std::endl;*/ }
+	SMOOTHING_GROUP OFF { /*std::cout << "smoothing group: " << $2 << std::endl;*/ }
 	| SMOOTHING_GROUP INTEGER { /*std::cout << "smoothing group: " << $2 << std::endl;*/ }
 	;
 
@@ -232,66 +245,87 @@ real:
 	INTEGER { $$ = $1; }
 	| FLOAT { $$ = $1; }
 	;
+path:
+	FILENAME { $$ = $1; }
+	| PATH { $$ = $1; }
 
 newmtl_line:
 	NEWMTL IDENTIFIER { $$ = new obj::material($2); }
 	;
 ambient_line:
-	KA real real real { $$ = new obj::vec3($2, $3, $4); }
+	KA
+	| KA real real real { $$ = new obj::vec3($2, $3, $4); }
 	;
 diffuse_line:
-	KD real real real { $$ = new obj::vec3($2, $3, $4); }
+	KD
+	| KD real real real { $$ = new obj::vec3($2, $3, $4); }
 	;
 specular_line:
-	KS real real real { $$ = new obj::vec3($2, $3, $4); }
+	KS
+	| KS real real real { $$ = new obj::vec3($2, $3, $4); }
+	;
+env_color_line:
+	KE
+	| KE real real real { $$ = new obj::vec3($2, $3, $4); }
 	;
 dissolve_line:
 	D real { $$ = $2; }
+	| TR real { $$ = $2; }
 	;
 specular_n_line:
-	NS real { $$ = $2; }
+	NS
+	| NS real { $$ = $2; }
 	;
 illum_line:
-    ILLUM INTEGER { $$ = $2; }
+	ILLUM
+    | ILLUM INTEGER { $$ = $2; }
     ;
 ambient_map_line:
     MAP_KA
-	| MAP_KA FILENAME { $$ = new obj::tex_map($2); }
+	| MAP_KA path { $$ = new obj::tex_map($2); }
 	;
 diffuse_map_line:
     MAP_KD
-	| MAP_KD FILENAME { $$ = new obj::tex_map($2); }
+	| MAP_KD path { $$ = new obj::tex_map($2); }
 	;
 specular_map_line:
 	MAP_KS
-    | MAP_KS FILENAME { $$ = new obj::tex_map($2); }
+    | MAP_KS path { $$ = new obj::tex_map($2); }
 	;
 specular_n_map_line:
-	MAP_NS FILENAME { $$ = new obj::tex_map($2); }
+	MAP_NS
+	| MAP_NS path { $$ = new obj::tex_map($2); }
 	;
 bump_map_line:
     MAP_BUMP
 	| BUMP
-    | MAP_BUMP FILENAME { $$ = new obj::tex_map($2); }
-    | BUMP FILENAME { $$ = new obj::tex_map($2); }
+    | MAP_BUMP path { $$ = new obj::tex_map($2); }
+    | BUMP path { $$ = new obj::tex_map($2); }
 	;
 dissolve_map_line:
 	MAP_D
     | MAP_OPACITY
-    | MAP_D FILENAME { $$ = new obj::tex_map($2); }
-	| MAP_OPACITY FILENAME { $$ = new obj::tex_map($2); }
+    | MAP_D path { $$ = new obj::tex_map($2); }
+	| MAP_OPACITY path { $$ = new obj::tex_map($2); }
     ;
 decal_map_line:
     DECAL
-    | DECAL FILENAME { $$ = new obj::tex_map($2); }
+    | DECAL path { $$ = new obj::tex_map($2); }
     ;
 disp_map_line:
     DISP
-    | DISP FILENAME { $$ = new obj::tex_map($2); }
+    | DISP path { $$ = new obj::tex_map($2); }
     ;
 refl_map_line:
 	REFL
-    | REFL FILENAME { $$ = new obj::tex_map($2); } 
+    | REFL path { $$ = new obj::tex_map($2); }
+trans_filter_line:
+	TF real real real { $$ = new obj::vec3($2, $3, $4); }
+	;
+optical_density_line:
+	NI
+	| NI real { $$ = $2; }
+	;
 %%
 
 

@@ -59,3 +59,7 @@ RangeRover.obj
 f430.obj
 f430.mtl
 LAM.mtl
+test.mtl
+test.obj
+obj_parser.output
+debug.txt

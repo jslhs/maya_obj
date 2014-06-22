@@ -20,6 +20,7 @@ obj_reader::~obj_reader()
 
 bool obj_reader::read()
 {
+	_parser.set_debug_level(_trace_parsing);
 	_obj_fs.open(_obj_filename);
 	if(_obj_fs.fail())
 	{

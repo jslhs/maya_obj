@@ -40,15 +40,33 @@ int main(int argc, char *argv[])
     std::cout << "normals: " << r.normals().size() << std::endl;
 	std::cout << "materials: " << r.materials().size() << std::endl;
 
+	/*
     for(auto o : r.objects())
     {
         std::cout << "object: " << (o->name ? (*o->name) : "") << ", faces: " << o->faces.size() << std::endl;
     }
-
+	*/
+	
+	/*
     for(auto m : r.materials())
     {
         std::cout << "material: " << (m.first ? (*m.first) : "") << std::endl;
     }
+	*/
+
+	for(auto &p : r.mtl_faces())
+	{
+		auto &mtl = p.first;
+		auto &f = p.second;
+		std::cout << "Material: " << mtl << ", Faces: " << f.size() << std::endl;
+	}
+
+	for(auto &p : r.obj_faces())
+	{
+		auto &obj = p.first;
+		auto &f = p.second;
+		std::cout << "Object: " << obj << ", Faces: " << f.size() << std::endl;
+	}
 
     std::cout << "time used: " << dur / 1000.0 << "s" << std::endl;
     return 0;
