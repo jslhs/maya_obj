@@ -21,9 +21,12 @@ INCS=-I./
 
 .PHONY:all clean
 
-all:scanner parser
+all:src
 	@echo CXX "$(TARGET)"
 	@$(CXX) $(INCS) $(LIBS) $(CXX_FLAGS) -o $(TARGET) $(SRC_FILES)
+
+src:scanner parser
+	@echo GEN SCANNER PARSER
 
 scanner:$(SCANNER)
 	@echo LEX "$<"

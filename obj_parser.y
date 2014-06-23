@@ -155,6 +155,8 @@
 %type <fval> optical_density_line;
 %type <color> trans_filter_line;
 
+%type <sval> material_line;
+
 %%
 
 obj_file:
@@ -169,14 +171,14 @@ obj_file_lines:
 obj_file_line:
 	COMMENT
     | MATERIAL_LIBRARY FILENAME { reader.parse_mtl(*$2); }
-	| material_line
-	| vertex_line { reader.add($1); }
-	| normal_line { reader.add($1); }
-	| texture_line { reader.add($1); }
-	| face_line { reader.add($1); }
-	| group_line { reader.add($1); }
+	| material_line             { reader.set_mtl_name($1); }
+	| vertex_line               { reader.add($1); }
+	| normal_line               { reader.add($1); }
+	| texture_line              { reader.add($1); }
+	| face_line                 { reader.add($1); }
+	| group_line                { reader.add($1); }
     | smooth_group_line
-	| object_line { reader.add($1); }
+	| object_line               { reader.add($1); }
     
     /* mtl file lines */
     | newmtl_line				 { reader.add($1); }	
@@ -201,7 +203,7 @@ obj_file_line:
 	;
 
 material_line:
-	MATERIAL_NAME IDENTIFIER { reader.set_mtl_name($2); }
+	MATERIAL_NAME IDENTIFIER { $$ = $2; }
 	;
 
 vertex_line:

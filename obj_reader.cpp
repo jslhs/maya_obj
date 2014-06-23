@@ -29,13 +29,16 @@ bool obj_reader::read()
 	}
     _scanner.scan(&_obj_fs, &_obj_filename);
 	if(_parser.parse()) return false;
-	_mtl_fs.open(_mtl_filename);
-	if(_mtl_fs.fail())
-	{
-		std::cerr << "unable to open file: " << _mtl_filename << std::endl;
-		return false;
-	}
-	_scanner.scan(&_mtl_fs, &_mtl_filename);
+    if(!_mtl_filename.empty())
+    {
+	    _mtl_fs.open(_mtl_filename);
+	    if(_mtl_fs.fail())
+    	{
+		    std::cerr << "unable to open file: " << _mtl_filename << std::endl;
+		    return false;
+	    }
+	    _scanner.scan(&_mtl_fs, &_mtl_filename);
+    }
     return !_parser.parse();
 }
 

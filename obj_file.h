@@ -231,7 +231,6 @@ namespace obj
     {
         std::string *name;
 
-		object() { }
 		object(std::string *n = nullptr)
 			: name(n)
 		{
