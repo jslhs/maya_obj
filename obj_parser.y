@@ -121,6 +121,7 @@
 %token <fval> TF
 %token <fval> TR
 %token <fval> NI
+%token <ival> KM
 
 %left SLASH
 %left BACK_SLASH
@@ -200,6 +201,7 @@ obj_file_line:
     | refl_map_line				 { reader.set_mtl_refl($1); }
     | trans_filter_line			 { reader.set_mtl_Tf($1); }
 	| optical_density_line		 { reader.set_mtl_Ni($1); }
+    | km_line
 	;
 
 material_line:
@@ -328,6 +330,10 @@ optical_density_line:
 	NI
 	| NI real { $$ = $2; }
 	;
+km_line:
+    KM
+    | KM INTEGER
+    ;
 %%
 
 

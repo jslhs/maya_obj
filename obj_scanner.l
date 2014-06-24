@@ -21,8 +21,11 @@ identifier      {alpha_num}+
 filename        [a-zA-Z\.\-_0-9\(\)\?]+
 string          \"([^"\n]|\"\")+\"
 bad_string      \"([^"\n]|\"\")+
-float           (-?{i}\.{i}?|{i}?\.{i}){exponent}?
+ffloat           (-?{i}\.{i}?|{i}?\.{i}){exponent}?
+ifloat          -?{i}{exponent}
+float           ({ifloat}|{ffloat})
 real			({i}|{float})
+rpath           [a-z0-9]([a-z0-9-]*[a-z0-9])?(/[a-z0-9]([a-z0-9-]*[a-z0-9])?)*
 path			[a-zA-Z\.\-_0-9\\~\:]+
 %%
 
@@ -67,6 +70,7 @@ Ka              return(obj_parser::token::KA);
 Kd              return(obj_parser::token::KD);
 Ks              return(obj_parser::token::KS);
 Ke				return(obj_parser::token::KE);
+Km              return(obj_parser::token::KM);
 Ns              return(obj_parser::token::NS);
 illum           return(obj_parser::token::ILLUM);
 d               return(obj_parser::token::D);
@@ -87,6 +91,7 @@ Tr				return(obj_parser::token::TR);
 Ni				return(obj_parser::token::NI);
 
 
+"/"             return(obj_parser::token::SLASH);
 "\\\n"			{ yyloc->lines(); }	
 \n              { yyloc->lines(); }
 {white_space}   
@@ -98,7 +103,6 @@ Ni				return(obj_parser::token::NI);
 {filename}      { yylval->sval = new std::string(yytext); _strings.push_back(yylval->sval); return(obj_parser::token::FILENAME); }
 {path}			{ yylval->sval = new std::string(yytext); _strings.push_back(yylval->sval); return(obj_parser::token::PATH); }
 
-"/"             return(obj_parser::token::SLASH);
  /* "\\"			return(BACK_SLASH); */
 
 %%
